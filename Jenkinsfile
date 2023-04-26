@@ -21,7 +21,7 @@ pipeline {
         }
     stage('Docker Build and Push') {
       steps {
-        withDockerRegistry([credentialsId: "docker-hub", url: "https://index.docker.io/v1/"]) {
+        withDockerRegistry([credentialsId: "docker-hub", url: "https://docker.io/"]) {
           sh 'printenv'
           sh 'sudo docker build -t asmaayounis/java-app-1:""$GIT_COMMIT"" .'
           sh 'docker push asmaayounis/java-app-1:""$GIT_COMMIT""'
