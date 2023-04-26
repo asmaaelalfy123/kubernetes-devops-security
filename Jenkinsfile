@@ -1,10 +1,6 @@
 pipeline {
   agent any
-  environment {
-        DOCKER_REGISTRY = 'docker.io'
-        DOCKER_IMAGE_NAME = 'java-app-1'
-        DOCKER_HUB_CREDENTIALS = credentials('docker-hub')
-    }
+ 
     
   stages {
       stage('Build Artifact') {
@@ -24,23 +20,24 @@ pipeline {
               }
             }
         }
-    stage('Build') {
-            steps {
-                script {
-                    docker.build("$DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$BUILD_NUMBER")
-                }
-            }
-        }
-    stage('Docker Build and Push') {
+    stage('Build Docker Image') {
       steps {
-        
-          script {
-                    docker.withRegistry("$DOCKER_REGISTRY", "$DOCKER_HUB_CREDENTIALS") {
-                     docker.image("$DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$BUILD_NUMBER").push()
-                    }
-                }
-       
+        script {
+           dockerImage = docker.build("asmaayounis/java-app-1:${env.BUILD_NUMBER}")
         }
       }
+    }
+
+    stage('Docker Hub Login') {
+      steps {
+        script {
+           withDockerRegistry([ credentialsId: "docker-hub", url: "" ]) {
+             dockerImage.push()
+        }
+          }
+        }
+      }
+    }
+
     }
     }
