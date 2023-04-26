@@ -35,7 +35,7 @@ pipeline {
       steps {
         
           script {
-                    docker.withRegistry("$DOCKER_REGISTRY", "docker-hub-credentials") {
+                    docker.withRegistry("$DOCKER_REGISTRY", "$DOCKER_HUB_CREDENTIALS") {
                      docker.image("$DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$BUILD_NUMBER").push()
                     }
                 }
