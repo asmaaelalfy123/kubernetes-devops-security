@@ -1,6 +1,11 @@
 pipeline {
   agent any
-
+  environment {
+        DOCKER_REGISTRY = 'docker.io'
+        DOCKER_IMAGE_NAME = 'java-app-1'
+        DOCKER_HUB_CREDENTIALS = credentials('docker-hub')
+    }
+    
   stages {
       stage('Build Artifact') {
             steps {
@@ -19,12 +24,22 @@ pipeline {
               }
             }
         }
+    stage('Build') {
+            steps {
+                script {
+                    docker.build("$DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$BUILD_NUMBER")
+                }
+            }
+        }
     stage('Docker Build and Push') {
       steps {
-        withDockerRegistry([credentialsId: "docker-hub", url: "https://docker.io/"]) {
-          sh 'printenv'
-          sh 'sudo docker build -t asmaayounis/java-app-1:""$GIT_COMMIT"" .'
-          sh 'docker push asmaayounis/java-app-1:""$GIT_COMMIT""'
+        
+          script {
+                    docker.withRegistry("$DOCKER_REGISTRY", "docker-hub-credentials") {
+                     docker.image("$DOCKER_REGISTRY/$DOCKER_IMAGE_NAME:$BUILD_NUMBER").push()
+                    }
+                }
+       
         }
       }
     }
