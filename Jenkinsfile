@@ -18,6 +18,15 @@ pipeline {
                 jacoco execPattern: 'target/jacoco.exe'
               }
             }
-        }   
+        }
+    stage('Docker Build and Push') {
+      steps {
+        withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+          sh 'printenv'
+          sh 'sudo docker build -t asmaayounis/java-app-1:""$GIT_COMMIT"" .'
+          sh 'docker push asmaayounis/java-app-1:""$GIT_COMMIT""'
+        }
+      }
+    }
     }
 }
