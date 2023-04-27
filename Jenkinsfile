@@ -32,10 +32,10 @@ pipeline {
 //       }
 //     }
     stage('SonarQube Analysis') {
-      
-      withSonarQubeEnv() {
-        sh "mvn  sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.projectName='java-app-1"
-    
+      steps {
+        withSonarQubeEnv() {
+          sh "mvn  sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.projectName='java-app-1"
+        }
   }
 }
     stage('Build Docker Image') {
