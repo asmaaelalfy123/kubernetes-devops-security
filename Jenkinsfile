@@ -20,17 +20,23 @@ pipeline {
               }
             }
         }
-    stage('Mutation Tests - PIT') {
-      steps {
-        sh "mvn org.pitest:pitest-maven:mutationCoverage"
-      }
-      post {
-        always {
+//     stage('Mutation Tests - PIT') {
+//       steps {
+//         sh "mvn org.pitest:pitest-maven:mutationCoverage"
+//       }
+//       post {
+//         always {
         
-          pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
+//           pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
+//         }
+//       }
+//     }
+    stage('SonarQube Analysis') {
+        def mvn = tool 'mvn';
+        withSonarQubeEnv() {
+          sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.projectName='java-app-1'"
         }
       }
-    }
     stage('Build Docker Image') {
       steps {
         script {
