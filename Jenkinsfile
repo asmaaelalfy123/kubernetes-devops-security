@@ -33,9 +33,8 @@ pipeline {
 //     }
     stage('SonarQube Analysis') {
       
-      def mvn = tool 'mvn';
       withSonarQubeEnv() {
-        sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.projectName='java-app-1'"
+        sh "mvn  sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.projectName='java-app-1"
     
   }
 }
