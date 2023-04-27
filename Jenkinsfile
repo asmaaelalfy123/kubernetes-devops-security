@@ -3,7 +3,7 @@ pipeline {
  
     
   stages {
-      stage('Build Artifact') {
+    stage('Build Artifact') {
             steps {
               sh "mvn clean package -DskipTests=true"
               archive 'target/*.jar' //so that they can be downloaded later
@@ -39,8 +39,6 @@ pipeline {
     
   }
 }
-
-      }
     stage('Build Docker Image') {
       steps {
         script {
@@ -70,4 +68,3 @@ pipeline {
     }
 
     }
-    
