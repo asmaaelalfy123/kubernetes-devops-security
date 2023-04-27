@@ -33,7 +33,7 @@ pipeline {
 //     }
     stage('SonarQube Analysis') {
       steps {
-        withSonarQubeEnv() {
+        withSonarQubeEnv('SonarQube') {
           sh "mvn  sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.projectName='java-app-1"
         }
   }
