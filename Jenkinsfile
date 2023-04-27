@@ -32,15 +32,14 @@ pipeline {
 //       }
 //     }
     stage('SonarQube Analysis') {
-   
-      steps{
-          
-                  withSonarQubeEnv('SonarQube') {
-                    sh "mvn sonar:sonar \
-                            -Dsonar.projectKey=java-app-1 \
-                            -Dsonar.host.url=http://devops-demo-1.eastus.cloudapp.azure.com:9000"
-        }
-        }
+      
+      def mvn = tool 'mvn';
+      withSonarQubeEnv() {
+        sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.projectName='java-app-1'"
+    
+  }
+}
+
       }
     stage('Build Docker Image') {
       steps {
