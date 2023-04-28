@@ -36,6 +36,11 @@ pipeline {
         withSonarQubeEnv('SonarQube') {
           sh "mvn  clean verify sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.projectName='java-app-1' "
         }
+        timeout(time: 2, unit: 'MINUTES') {
+          script {
+            waitForQualityGate abortPipeline: true
+          }
+        }
   }
 }
     stage('Build Docker Image') {
