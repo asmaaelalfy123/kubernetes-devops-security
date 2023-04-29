@@ -68,6 +68,9 @@ pipeline {
     stage('Build Docker Image') {
       steps {
         script {
+	   sh "sudo mkdir -p /var/lib/jenkins/workspace/build-app-springboot/trivy "
+            sh "sudo chmod -R 777 /var/lib/jenkins/workspace/build-app-springboot/trivy"
+
            dockerImage = docker.build("asmaayounis/java-app-1:${env.BUILD_NUMBER}")
         }
       }
