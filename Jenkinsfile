@@ -39,6 +39,20 @@ pipeline {
        
   }
 }
+    
+    	stage('Vulnerability Scan - Docker') {
+      steps {
+       
+        		sh "mvn dependency-check:check"
+			}
+        post {
+        
+          always {
+            dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+          }
+        }
+    
+    }
 //     stage("qaulity gate"){
 //       steps {
 //         timeout(time: 2, unit: 'MINUTES') {
