@@ -85,15 +85,17 @@ pipeline {
 //       }
 //     }
 
-//     stage('Docker Hub Login') {
-//       steps {
-//         script {
-//            withDockerRegistry([ credentialsId: "docker-hub", url: "" ]) {
+    stage('Docker Hub Login') {
+      steps {
+        script {
+           withDockerRegistry([ credentialsId: "docker-hub", url: "" ]) {
+               sh  'docker build -t asmaayounis/java-app-1:""$GIT_COMMIT"" .' 
+               sh  'docker push  asmaayounis/java-app-1:""$GIT_COMMIT"" ' 
 //              dockerImage.push()
-//         }
-//           }
-//         }
-//       }
+        }
+          }
+        }
+      }
 //      stage('K8S Deployment - DEV') {
 //       steps {
       
