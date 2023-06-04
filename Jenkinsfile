@@ -22,25 +22,36 @@ pipeline {
             }
             
         }
-	  
-	      stage('Docker Build and Push') {
+    stage('Build Docker Image') {
       steps {
-        withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
-          sh 'printenv'
-          sh 'sudo docker build -t asmaayounis/java-app-1:""$GIT_COMMIT""  .'
-          sh 'docker push asmaayounis/java-app-1:""$GIT_COMMIT"" '
+        script {
+// 	   sh "sudo mkdir -p /var/lib/jenkins/workspace/build-app-springboot/trivy "
+//             sh "sudo chmod -R 777 /var/lib/jenkins/workspace/build-app-springboot/trivy"
+
+           dockerImage = docker.build("asmaayounis/java-app-1:${env.BUILD_NUMBER}")
         }
       }
     }
-	       stage('K8S Deployment - DEV') {
+
+    stage('Docker Hub Login') {
+      steps {
+        script {
+           withDockerRegistry([ credentialsId: "docker-hub", url: "" ]) {
+             dockerImage.push()
+        }
+          }
+        }
+      }
+     stage('K8S Deployment - DEV') {
       steps {
       
             withKubeConfig([credentialsId: 'kubeconfig']) {
-              sh "sed -i 's#replace#asmaayounis/java-app-1:""$GIT_COMMIT"" #g' k8s_deployment_service.yaml"
+              sh "sed -i 's#replace#asmaayounis/java-app-1:${env.BUILD_NUMBER}#g' k8s_deployment_service.yaml"
               sh "kubectl apply -f k8s_deployment_service.yaml"
             }
       }
      }
+    }
     }
   }
 
