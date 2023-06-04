@@ -27,10 +27,20 @@ pipeline {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
           sh 'printenv'
-          sh 'sudo docker build -t asmaayounis/numeric-app:""$GIT_COMMIT"" .'
-          sh 'docker push asmaayounis/numeric-app:""$GIT_COMMIT""'
+          sh 'sudo docker build -t asmaayounis/java-app-1:""$GIT_COMMIT"" .'
+          sh 'docker push asmaayounis/java-app-1:""$GIT_COMMIT""'
         }
       }
+    }
+	       stage('K8S Deployment - DEV') {
+      steps {
+      
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+              sh "sed -i 's#replace#asmaayounis/java-app-1:${env.BUILD_NUMBER}#g' k8s_deployment_service.yaml"
+              sh "kubectl apply -f k8s_deployment_service.yaml"
+            }
+      }
+     }
     }
   }
 }
