@@ -25,19 +25,26 @@ pipeline {
   }
 }
 
-   stage('Build') {
-      steps {
-        // Checkout source code from version control
-        // Perform build steps (e.g., compiling code, running tests)
-        // Build the Docker image
-        script {
-          docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {
-            def customImage = docker.build("asmaayounis/java-app-1:${env.BUILD_NUMBER}")
-            customImage.push()
-          }
-        }
-      }
+stage('Build') {
+  steps {
+    script {
+      def customImage = docker.build("asmaayounis/java-app-1:${env.BUILD_NUMBER}")
     }
+  }
+}
+//    stage('Build') {
+//       steps {
+//         // Checkout source code from version control
+//         // Perform build steps (e.g., compiling code, running tests)
+//         // Build the Docker image
+//         script {
+//           docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {
+//             def customImage = docker.build("asmaayounis/java-app-1:${env.BUILD_NUMBER}")
+//             customImage.push()
+//           }
+//         }
+//       }
+//     }
 //     stage('Mutation Tests - PIT') {
 //       steps {
 //         sh "mvn org.pitest:pitest-maven:mutationCoverage"
