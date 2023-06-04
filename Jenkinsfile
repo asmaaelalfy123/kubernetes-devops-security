@@ -9,7 +9,7 @@ pipeline {
               sh "mvn clean package -DskipTests=true"
               archive 'target/*.jar' //so that they can be downloaded later
             }
-        }  
+          }
     stage('test app') {
             steps {
               sh "mvn test"
@@ -22,16 +22,37 @@ pipeline {
             }
             
         }
-  }
-}
-
-stage('Build') {
-  steps {
-    script {
-      def customImage = docker.build("asmaayounis/java-app-1:${env.BUILD_NUMBER}")
+	  
+	      stage('Docker Build and Push') {
+      steps {
+        withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+          sh 'printenv'
+          sh 'sudo docker build -t asmaayounis/numeric-app:""$GIT_COMMIT"" .'
+          sh 'docker push asmaayounis/numeric-app:""$GIT_COMMIT""'
+        }
+      }
     }
   }
 }
+
+//     stage('Docker Build and Push') {
+//       steps {
+//         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+//           sh 'printenv'
+//           sh 'sudo docker build -t siddharth67/numeric-app:""$GIT_COMMIT"" .'
+//           sh 'docker push siddharth67/numeric-app:""$GIT_COMMIT""'
+//         }
+//       }
+//     }
+
+
+// stage('Build') {
+//   steps {
+//     script {
+//       def customImage = docker.build("asmaayounis/java-app-1:${env.BUILD_NUMBER}")
+//     }
+//   }
+// }
 //    stage('Build') {
 //       steps {
 //         // Checkout source code from version control
