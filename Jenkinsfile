@@ -5,7 +5,7 @@ pipeline {
   stages {
     stage('Build Artifact') {
             steps {
-		echo "test app"
+		echo "test app  "
               sh "mvn clean package -DskipTests=true"
               archive 'target/*.jar' //so that they can be downloaded later
             }
@@ -27,8 +27,8 @@ pipeline {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
           sh 'printenv'
-          sh 'sudo docker build -t asmaayounis/java-app-1:${env.BUILD_NUMBER} .'
-          sh 'docker push asmaayounis/java-app-1:${env.BUILD_NUMBER} '
+          sh 'sudo docker build -t asmaayounis/java-app-1:""$GIT_COMMIT""  .'
+          sh 'docker push asmaayounis/java-app-1:""$GIT_COMMIT"" '
         }
       }
     }
@@ -36,7 +36,7 @@ pipeline {
       steps {
       
             withKubeConfig([credentialsId: 'kubeconfig']) {
-              sh "sed -i 's#replace#asmaayounis/java-app-1:${env.BUILD_NUMBER}#g' k8s_deployment_service.yaml"
+              sh "sed -i 's#replace#asmaayounis/java-app-1:""$GIT_COMMIT"" #g' k8s_deployment_service.yaml"
               sh "kubectl apply -f k8s_deployment_service.yaml"
             }
       }
