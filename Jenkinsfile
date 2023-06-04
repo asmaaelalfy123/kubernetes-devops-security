@@ -15,6 +15,8 @@ pipeline {
             }
             
         }
+  }
+}
 //     stage('Mutation Tests - PIT') {
 //       steps {
 //         sh "mvn org.pitest:pitest-maven:mutationCoverage"
@@ -26,21 +28,21 @@ pipeline {
 //         }
 //       }
 //     }
-    stage('SonarQube Analysis') {
-      steps {
-        withSonarQubeEnv('SonarQube') {
-          sh "mvn  clean verify sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.projectName='java-app-1' "
-        }
+//     stage('SonarQube Analysis') {
+//       steps {
+//         withSonarQubeEnv('SonarQube') {
+//           sh "mvn  clean verify sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.projectName='java-app-1' "
+//         }
        
-  }
-}
-	  stage('scanning docker image uing trivy'){
-		  steps {
+//   }
+// }
+// 	  stage('scanning docker image uing trivy'){
+// 		  steps {
 		  
-		     sh "bash trivy-docker-image-scan.sh"
-		  }
+// 		     sh "bash trivy-docker-image-scan.sh"
+// 		  }
 	   
-	  }
+// 	  }
     
 //     stage('Vulnerability Scan - Docker') {
 //       steps {
@@ -65,41 +67,41 @@ pipeline {
       
     
 //     }
-    stage('Build Docker Image') {
-      steps {
-        script {
-	   sh "sudo mkdir -p /var/lib/jenkins/workspace/build-app-springboot/trivy "
-            sh "sudo chmod -R 777 /var/lib/jenkins/workspace/build-app-springboot/trivy"
+//     stage('Build Docker Image') {
+//       steps {
+//         script {
+// 	   sh "sudo mkdir -p /var/lib/jenkins/workspace/build-app-springboot/trivy "
+//             sh "sudo chmod -R 777 /var/lib/jenkins/workspace/build-app-springboot/trivy"
 
-           dockerImage = docker.build("asmaayounis/java-app-1:${env.BUILD_NUMBER}")
-        }
-      }
-    }
+//            dockerImage = docker.build("asmaayounis/java-app-1:${env.BUILD_NUMBER}")
+//         }
+//       }
+//     }
 
-    stage('Docker Hub Login') {
-      steps {
-        script {
-           withDockerRegistry([ credentialsId: "docker-hub", url: "" ]) {
-             dockerImage.push()
-        }
-          }
-        }
-      }
-     stage('K8S Deployment - DEV') {
-      steps {
+//     stage('Docker Hub Login') {
+//       steps {
+//         script {
+//            withDockerRegistry([ credentialsId: "docker-hub", url: "" ]) {
+//              dockerImage.push()
+//         }
+//           }
+//         }
+//       }
+//      stage('K8S Deployment - DEV') {
+//       steps {
       
-            withKubeConfig([credentialsId: 'kubeconfig']) {
-              sh "sed -i 's#replace#asmaayounis/java-app-1:${env.BUILD_NUMBER}#g' k8s_deployment_service.yaml"
-              sh "kubectl apply -f k8s_deployment_service.yaml"
-            }
-      }
-     }
-    }
-	post {
-              always {
-                junit 'target/surefire-reports/*.xml'
-                jacoco execPattern: 'target/jacoco.exe'
-              }
-            }
+//             withKubeConfig([credentialsId: 'kubeconfig']) {
+//               sh "sed -i 's#replace#asmaayounis/java-app-1:${env.BUILD_NUMBER}#g' k8s_deployment_service.yaml"
+//               sh "kubectl apply -f k8s_deployment_service.yaml"
+//             }
+//       }
+//      }
+//     }
+// 	post {
+//               always {
+//                 junit 'target/surefire-reports/*.xml'
+//                 jacoco execPattern: 'target/jacoco.exe'
+//               }
+//             }
 
-    }
+//     }
