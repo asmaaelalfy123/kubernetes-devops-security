@@ -42,6 +42,12 @@ pipeline {
           }
         }
       }
+ stage('SonarQube Analysis') {
+    def mvn = tool 'Default Maven';
+    withSonarQubeEnv() {
+      sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.projectName='java-app-1'"
+    }
+  }
      stage('K8S Deployment - DEV') {
       steps {
       
@@ -51,12 +57,7 @@ pipeline {
             }
       }
      }
-stage('SonarQube Analysis') {
-    def mvn = tool 'Default Maven';
-    withSonarQubeEnv() {
-      sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.projectName='java-app-1'"
-    }
-  }
+
     }
     }
   
