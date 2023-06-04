@@ -25,26 +25,19 @@ pipeline {
   }
 }
 
-   stage('Build Docker Image') {
+   stage('Build') {
       steps {
+        // Checkout source code from version control
+        // Perform build steps (e.g., compiling code, running tests)
+        // Build the Docker image
         script {
-// 	   sh "sudo mkdir -p /var/lib/jenkins/workspace/build-app-springboot/trivy "
-//             sh "sudo chmod -R 777 /var/lib/jenkins/workspace/build-app-springboot/trivy"
-
-           dockerImage = docker.build("asmaayounis/java-app-1:${env.BUILD_NUMBER}")
-        }
-      }
-    }
-
-    stage('Docker Hub Login') {
-      steps {
-        script {
-           withDockerRegistry([ credentialsId: "docker-hub", url: "" ]) {
-             dockerImage.push()
-        }
+          docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {
+            def customImage = docker.build("asmaayounis/java-app-1:${env.BUILD_NUMBER}")
+            customImage.push()
           }
         }
       }
+    }
 //     stage('Mutation Tests - PIT') {
 //       steps {
 //         sh "mvn org.pitest:pitest-maven:mutationCoverage"
