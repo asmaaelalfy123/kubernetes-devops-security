@@ -24,6 +24,27 @@ pipeline {
         }
   }
 }
+
+   stage('Build Docker Image') {
+      steps {
+        script {
+// 	   sh "sudo mkdir -p /var/lib/jenkins/workspace/build-app-springboot/trivy "
+//             sh "sudo chmod -R 777 /var/lib/jenkins/workspace/build-app-springboot/trivy"
+
+           dockerImage = docker.build("asmaayounis/java-app-1:${env.BUILD_NUMBER}")
+        }
+      }
+    }
+
+    stage('Docker Hub Login') {
+      steps {
+        script {
+           withDockerRegistry([ credentialsId: "docker-hub", url: "" ]) {
+             dockerImage.push()
+        }
+          }
+        }
+      }
 //     stage('Mutation Tests - PIT') {
 //       steps {
 //         sh "mvn org.pitest:pitest-maven:mutationCoverage"
@@ -85,19 +106,19 @@ pipeline {
 //       }
 //     }
 
-    stage('Docker Hub Login') {
-      steps {
-	      withDockerRegistry([credentialsId: "docker-hub", url: "https://docker.io/"]) {
-          sh 'printenv'
-          sh 'sudo docker build -t asmaayounis/java-app-1:""$GIT_COMMIT"" .'
-          sh 'docker push asmaayounis/java-app-1:""$GIT_COMMIT""'
+//     stage('Docker Hub Login') {
+//       steps {
+// 	      withDockerRegistry([credentialsId: "docker-hub", url: "https://docker.io/"]) {
+//           sh 'printenv'
+//           sh 'sudo docker build -t asmaayounis/java-app-1:""$GIT_COMMIT"" .'
+//           sh 'docker push asmaayounis/java-app-1:""$GIT_COMMIT""'
 
        
 		   
 
-          }
-        }
-      }
+//           }
+//         }
+//       }
 //      stage('K8S Deployment - DEV') {
 //       steps {
       
