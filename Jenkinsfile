@@ -26,7 +26,7 @@ pipeline {
    stage('SonarQube Analysis') {
       steps {
         withSonarQubeEnv('SonarQube') {
-          sh "mvn  clean verify sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.host.url=http://18.212.73.80:9090 -Dsonar.projectName='java-app-1' "
+          sh "mvn  clean verify sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.host.url=http://23.22.161.61:9090 -Dsonar.projectName='java-app-1' "
         }
        timeout(time: 2, unit: 'MINUTES') {
         
