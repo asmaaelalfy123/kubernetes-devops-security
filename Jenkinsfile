@@ -7,7 +7,7 @@ pipeline {
             steps {
 		echo "test app 1 2"
               sh "mvn clean package -DskipTests=true"
-              archive 'target/*.jar' //so that they can be downloaded later
+              archiveArtifacts 'target/*.jar' //so that they can be downloaded later
             }
           }
     stage('test app') {
