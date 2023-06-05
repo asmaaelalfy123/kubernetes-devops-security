@@ -23,12 +23,16 @@ pipeline {
             
         }
 	  
-	   stage('SonarQube Analysis') {
-	 steps{
-	         sh "mvn  sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.host.url=http://34.238.246.52:9090 -Dsonar.login=sqp_940fbf0410abc9d990093a3e227ca19e2d4097ce -Dsonar.projectName='java-app-1'"
-
-	 }
-    
+   stage('SonarQube Analysis') {
+      steps {
+        withSonarQubeEnv('SonarQube') {
+          sh "mvn  clean verify sonar:sonar -Dsonar.projectKey=java-app-1 -Dsonar.host.url=http://18.212.73.80:9090 -Dsonar.projectName='java-app-1' "
+        }
+       timeout(time: 2, unit: 'MINUTES') {
+        
+            waitForQualityGate abortPipeline: true
+         }
+}
   }
     stage('Build Docker Image') {
       steps {
