@@ -34,7 +34,7 @@ pipeline {
 //          }
 // }
 //   }
-//     stage('Build Docker Image') {
+    stage('Build Docker Image') {
       steps {
         script {
 // 	   sh "sudo mkdir -p /var/lib/jenkins/workspace/build-app-springboot/trivy "
